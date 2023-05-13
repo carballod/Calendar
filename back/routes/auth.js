@@ -1,5 +1,3 @@
-/* eslint-disable no-undef */
-
 /*
     Rutas de Usuarios / Auth
     host + /api/auth
