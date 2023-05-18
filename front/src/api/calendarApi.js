@@ -1,11 +1,13 @@
-/* eslint-disable no-undef */
 import axios from 'axios';
-import { getEnvVariables } from '../helpers/getEnvVariables';
+import { getEnvVariables } from '../helpers';
 
-const { VITE_API_URL } = getEnvVariables();
+const { VITE_API_URL } = getEnvVariables()
+
+
+
 
 const calendarApi = axios.create({
-    baseURL: VITE_API_URL,
+    baseURL: VITE_API_URL
 });
 
 // Todo: configurar interceptores
@@ -21,4 +23,3 @@ calendarApi.interceptors.request.use( config => {
 
 
 export default calendarApi;
-
