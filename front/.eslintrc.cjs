@@ -9,7 +9,8 @@ module.exports = {
     "plugin:react-hooks/recommended"
   ],
   "parserOptions": {
-    "ecmaVersion": 12
+    "ecmaVersion": 12,
+    "sourceType": "module"
   },
   "settings": {
     "react": {
@@ -17,5 +18,7 @@ module.exports = {
     }
   },
   "plugins": ["react", "react-hooks"],
-  "rules": {},
+  "rules": {
+    "react/prop-types": "off",
+  },
 }
