@@ -1,25 +1,28 @@
-import { useState } from "react";
-import { Calendar } from "react-big-calendar";
-import "react-big-calendar/lib/css/react-big-calendar.css";
+import { useEffect, useState } from 'react';
+import { Calendar } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
-import { Navbar, CalendarEvent, CalendarModal, FabAddNew, FabDelete } from "../";
-import { localizer, getMessagesES } from "../../helpers";
-import { useUiStore, useCalendarStore } from "../../hooks";
+import { Navbar, CalendarEvent, CalendarModal, FabAddNew, FabDelete} from '../';
+
+import { localizer, getMessagesES } from '../../helpers';
+import { useUiStore, useCalendarStore } from '../../hooks';
+
 
 
 export const CalendarPage = () => {
 
   const { openDateModal } = useUiStore();
-  const { events, setActiveEvent } = useCalendarStore();
-  const [lastView, setLastView] = useState(localStorage.getItem('lastView') || 'week' );
+  const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
+
+  const [ lastView, setLastView ] = useState(localStorage.getItem('lastView') || 'week' );
 
   const eventStyleGetter = ( event, start, end, isSelected ) => {
 
     const style = {
-      backgroundColor: '#367CF7',
+      backgroundColor: '#347CF7',
       borderRadius: '0px',
       opacity: 0.8,
-      color: 'white',
+      color: 'white'
     }
 
     return {
@@ -27,7 +30,8 @@ export const CalendarPage = () => {
     }
   }
 
-  const onDoubleClick = () => {
+  const onDoubleClick = ( event ) => {
+    // console.log({ doubleClick: event });
     openDateModal();
   }
 
@@ -37,14 +41,21 @@ export const CalendarPage = () => {
 
   const onViewChanged = ( event ) => {
     localStorage.setItem('lastView', event );
+    setLastView( event )
   }
+
+  useEffect(() => {
+    startLoadingEvents();
+  }, [])
+
+
 
   return (
     <>
       <Navbar />
 
       <Calendar
-        culture="es"
+        culture='es'
         localizer={ localizer }
         events={ events }
         defaultView={ lastView }
@@ -61,10 +72,13 @@ export const CalendarPage = () => {
         onView={ onViewChanged }
       />
 
+
       <CalendarModal />
+      
       <FabAddNew />
       <FabDelete />
 
+
     </>
-  );
-};
+  )
+}

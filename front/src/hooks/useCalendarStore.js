@@ -1,43 +1,62 @@
-import { useDispatch, useSelector } from "react-redux";
-import { onAddNewEvent, onDeleteEvent, onSetActiveEvent, onUpdateEvent } from "../store";
+import { useDispatch, useSelector } from 'react-redux';
+import { onAddNewEvent, onDeleteEvent, onSetActiveEvent, onUpdateEvent } from '../store';
+import { calendarApi } from '../api';
+import { convertEventsToDateEvents } from '../helpers';
+
 
 export const useCalendarStore = () => {
-  const { events, activeEvent } = useSelector((state) => state.calendar);
+  
+    const dispatch = useDispatch();
+    const { events, activeEvent } = useSelector( state => state.calendar );
 
-  const dispatch = useDispatch();
-
-  const setActiveEvent = ( calendarEvent ) => {
-    dispatch( onSetActiveEvent( calendarEvent ) );
-  }
-
-  const startSavingEvent = async( calendarEvent ) => {
-
-    // TODO: llegar al backend
-
-    //Todo bien
-    if( calendarEvent._id ){
-      // Actualizando
-      dispatch( onUpdateEvent({ ...calendarEvent }) );
-    } else {
-      // Creando
-      dispatch( onAddNewEvent({ ...calendarEvent, _id: new Date().getTime() }))
+    const setActiveEvent = ( calendarEvent ) => {
+        dispatch( onSetActiveEvent( calendarEvent ) )
     }
-  }
 
-  const startDeletingEvent = () => {
-    // Todo: llegar al backend
-    dispatch( onDeleteEvent() );
-  }
+    const startSavingEvent = async( calendarEvent ) => {
+        // TODO: llegar al backend
 
-  return {
-    //Propiedades
-    activeEvent,
-    events,
-    hasEventSelected: !!activeEvent,
+        // Todo bien
+        if( calendarEvent._id ) {
+            // Actualizando
+            dispatch( onUpdateEvent({ ...calendarEvent }) );
+        } else {
+            // Creando
+            dispatch( onAddNewEvent({ ...calendarEvent, _id: new Date().getTime() }) );
+        }
+    }
 
-    // Metodos
-    setActiveEvent,
-    startSavingEvent,
-    startDeletingEvent,
-  };
-};
+    const startDeletingEvent = () => {
+        // Todo: Llegar al backend
+
+
+        dispatch( onDeleteEvent() );
+    }
+
+    const startLoadingEvents = async () => {
+      try {
+
+        const { data } = await calendarApi.get( '/events' );
+        const events = convertEventsToDateEvents( data.eventos );
+        console.log( events );
+        
+      } catch (error) {
+        console.log('Error al cargar los eventos');
+        console.log(error);
+      }
+    }
+
+
+    return {
+        //* Propiedades
+        activeEvent,
+        events,
+        hasEventSelected: !!activeEvent,
+
+        //* Métodos
+        startDeletingEvent,
+        setActiveEvent,
+        startSavingEvent,
+        startLoadingEvents,
+    }
+}
